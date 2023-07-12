@@ -17,6 +17,6 @@ public class ErrorResult<T> extends Result<T> {
         EOF,
         MisMatch,
         Fail,
-        NoMatch
+        NoMatch,
     }
 }
