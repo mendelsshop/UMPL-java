@@ -14,8 +14,9 @@ public class ErrorResult<T> extends Result<T> {
     }
 
     public enum ErrorReason {
-    EOF,
-    MisMatch,
-    Fail,
-}
+        EOF,
+        MisMatch,
+        Fail,
+        NoMatch
+    }
 }

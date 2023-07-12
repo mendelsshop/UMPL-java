@@ -12,6 +12,5 @@ public class OkResult<T> extends Result<T> {
         this.context = context;
         type = ResultKind.Ok;
     }
-    
 
 }

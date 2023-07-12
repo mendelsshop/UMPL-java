@@ -21,7 +21,7 @@ public class Parsers {
     }
 
     public static Function<Context, Result<Character>> Matches(char c) {
-        return Parsers.Satisfy((cin) -> cin == c);   
+        return Parsers.Satisfy((cin) -> cin == c);
     }
 
     public static <T> Function<Context, Result<T>> Fail() {
