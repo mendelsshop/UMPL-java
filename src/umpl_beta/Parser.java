@@ -15,61 +15,65 @@ public class Parser<T> {
         this.parser_function = parser_function;
     }
 
-    public Parser<T> Alt(Function<Context, Result<T>> p1) {
-        return new Parser<T>(ParserCombinators.Alt(parser_function, p1));
+    public Parser<T> Alt(Parser<T> p1) {
+        return ParserCombinators.Alt(this, p1);
     }
 
     public <U> Parser<U> Map(Function<T, U> mapper) {
-        return new Parser<U>(ParserCombinators.Map(parser_function, mapper));
+        return ParserCombinators.Map(this, mapper);
     }
 
     public Result<T> parse(String input) {
         return parser_function.apply(new Context(input));
     }
 
-    public <U> Parser<Tuple<T, U>> Chain(Function<Context, Result<U>> p2) {
-        return new Parser<Tuple<T, U>>(ParserCombinators.Chain(parser_function, p2));
+    public Result<T> parse(Context input) {
+        return parser_function.apply(input);
+    }
+
+    public <U> Parser<Tuple<T, U>> Chain(Parser<U> p2) {
+        return ParserCombinators.Chain(this, p2);
     }
 
     public Parser<Optional<T>> Opt() {
-        return new Parser<Optional<T>>(ParserCombinators.Opt(parser_function));
+        return (ParserCombinators.Opt(this));
     }
 
     public Parser<Optional<List<T>>> Many() {
-        return new Parser<Optional<List<T>>>(ParserCombinators.Many(parser_function));
+        return (ParserCombinators.Many(this));
     }
 
     public Parser<List<T>> Many1() {
-        return new Parser<List<T>>(ParserCombinators.Many1(parser_function));
+        return (ParserCombinators.Many1(this));
     }
 
-    public <U> Parser<Optional<List<T>>> Sep(Function<Context, Result<U>> delim) {
-        return new Parser<>(ParserCombinators.Sep(parser_function, delim));
+    public <U> Parser<Optional<List<T>>> Sep(Parser<U> delim) {
+        return (ParserCombinators.Sep(this, delim));
     }
 
-    public <U> Parser<List<T>> Sep1(Function<Context, Result<U>> delim) {
-        return new Parser<>(ParserCombinators.Sep1(parser_function, delim));
+    public <U> Parser<List<T>> Sep1(Parser<U> delim) {
+        return (ParserCombinators.Sep1(this, delim));
     }
 
-    public <U> Parser<T> KeepRight(Function<Context, Result<U>> left) {
-        return new Parser<>(ParserCombinators.KeepRight(left, parser_function));
+    public <U> Parser<T> KeepRight(Parser<U> left) {
+        return (ParserCombinators.KeepRight(left, this));
     }
 
-    public <U> Parser<T> KeepLeft(Function<Context, Result<U>> right) {
-        return new Parser<>(ParserCombinators.KeepLeft(parser_function, right));
+    public <U> Parser<T> KeepLeft(Parser<U> right) {
+        return (ParserCombinators.KeepLeft(this, right));
     }
 
-    public <U, V> Parser<T> InBetween(Function<Context, Result<U>> left, Function<Context, Result<V>> right) {
-        return new Parser<>(ParserCombinators.InBetween(left, parser_function, right));
+    public <U, V> Parser<T> InBetween(Parser<U> left, Parser<V> right) {
+        return (ParserCombinators.InBetween(left, this, right));
     }
 
-    public Parser<List<T>> Seq(List<Function<Context, Result<T>>> parsers) {
-        parsers.add(0, parser_function);
-        return new Parser<>(ParserCombinators.Seq(parsers));
+    public Parser<List<T>> Seq(List<Parser<T>> parsers) {
+        parsers.add(0, this);
+        return (ParserCombinators.Seq(parsers.stream().map((p) -> p).toList()));
     }
 
-    public Parser<T> Choice(List<Function<Context, Result<T>>> parsers) {
-        parsers.add(0, parser_function);
-        return new Parser<>(ParserCombinators.Choice(parsers));
+    public Parser<T> Choice(List<Parser<T>> parsers) {
+        parsers.add(0, this);
+        return (ParserCombinators.Choice(parsers.stream().map((p) -> p).toList()));
     }
 }
