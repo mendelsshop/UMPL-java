@@ -1,11 +1,11 @@
-package umpl_beta;
+package parser_combinator;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import umpl_beta.ErrorResult.ErrorReason;
+import parser_combinator.ErrorResult.ErrorReason;
 
 public class Parsers {
     public static Parser<Character> Satisfy(Function<Character, Boolean> satisfies) {

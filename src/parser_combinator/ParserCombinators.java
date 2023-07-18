@@ -1,4 +1,4 @@
-package umpl_beta;
+package parser_combinator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +7,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import umpl_beta.ErrorResult.ErrorReason;
-import umpl_beta.Result.ResultKind;
+import parser_combinator.ErrorResult.ErrorReason;
+import parser_combinator.Result.ResultKind;
 
 public class ParserCombinators {
     public static <T> Parser<T> Alt(Parser<T> p1,

@@ -1,4 +1,4 @@
-package umpl_beta;
+package parser_combinator;
 
 public class OkResult<T> extends Result<T> {
     private T result;

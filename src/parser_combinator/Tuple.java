@@ -1,4 +1,4 @@
-package umpl_beta;
+package parser_combinator;
 
 public class Tuple<K, V> {
     K first;

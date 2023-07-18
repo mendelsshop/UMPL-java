@@ -1,4 +1,4 @@
-package umpl_beta;
+package parser_combinator;
 
 import static org.junit.Assert.*;
 
