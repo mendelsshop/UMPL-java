@@ -1,7 +1,7 @@
 package umpl.ast;
 
-public class Number extends Ast {
-    public Number(double val) {
+public class AstNumber extends Ast {
+    public AstNumber(double val) {
         this.val = val;
     }
 
