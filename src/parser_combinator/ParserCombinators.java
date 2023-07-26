@@ -96,7 +96,7 @@ public class ParserCombinators {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T> Parser<List<T>> Seq(List<Parser<T>> parsers) {
+    public static <T> Parser<List<T>> Seq(Parser<T>[] parsers) {
         return new Parser<>((ctx) -> {
             List<T> results = new ArrayList<T>();
             for (var parser : parsers) {
@@ -110,6 +110,36 @@ public class ParserCombinators {
                 results.add(value.getResult());
             }
             return new OkResult<>(results, ctx);
+        });
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> Parser<List<T>> Seq(List<Parser<T>>parsers) {
+        return new Parser<>((ctx) -> {
+            List<T> results = new ArrayList<T>();
+            for (var parser : parsers) {
+                Result<T> result = parser.parse(ctx);
+                if (result.getType() == ResultKind.Error) {
+                    // TODO: return error with consumed context
+                    return (Result<List<T>>) result;
+                }
+                var value = (OkResult<T>) result;
+                ctx = value.getContext();
+                results.add(value.getResult());
+            }
+            return new OkResult<>(results, ctx);
+        });
+    }
+
+    public static <T> Parser<T> Choice(Parser<T>[] parsers) {
+        return new Parser<>((ctx) -> {
+            for (var parser : parsers) {
+                Result<T> result = parser.parse(ctx);
+                if (result.getType() == ResultKind.Ok) {
+                    return result;
+                }
+            }
+            return new ErrorResult<>(ErrorReason.NoMatch, ctx);
         });
     }
 

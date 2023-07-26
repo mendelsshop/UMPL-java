@@ -74,6 +74,6 @@ public class Parser<T> {
 
     public Parser<T> Choice(List<Parser<T>> parsers) {
         parsers.add(0, this);
-        return (ParserCombinators.Choice(parsers.stream().map((p) -> p).toList()));
+        return (ParserCombinators.Choice( parsers.stream().map((p) -> p).toList()));
     }
 }

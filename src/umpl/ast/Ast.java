@@ -1,7 +1,26 @@
 package umpl.ast;
 
+
+import java.util.ArrayList;
+import java.util.List;
+
+import parser_combinator.Parser;
+import parser_combinator.ParserCombinators;
+
 public class Ast {
-    
+    public static Parser<Ast> parser() {
+        List<Parser<Ast>> parsers = new ArrayList<>();
+        parsers.add(AstHempty.parser);
+        parsers.add(AstString.parser);
+        parsers.add(AstBoolean.parser);
+        
+        return ParserCombinators.Choice(parsers);
+    }
+
+    public static void main(String[] args) throws Exception {
+        Ast ast = Ast.parser().parse("|").Unwrap();
+        System.out.println(ast);
+    }
 }
 
 // pub enum UMPL2Expr {

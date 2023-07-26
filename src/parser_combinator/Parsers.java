@@ -34,7 +34,7 @@ public class Parsers {
         return Parsers.AnyOf(" \n\t").Many1().Map(ws -> listToString(ws));
     }
 
-    private static String listToString(List<Character> list) {
+    public static String listToString(List<Character> list) {
         return (list).stream().map(c -> c.toString()).collect(Collectors.joining());
     }
 

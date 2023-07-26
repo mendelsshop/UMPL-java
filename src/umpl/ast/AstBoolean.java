@@ -1,5 +1,7 @@
 package umpl.ast;
 
+import parser_combinator.Parser;
+import parser_combinator.Parsers;
 
 public class AstBoolean extends Ast {
     public AstBoolean(BooleanType val) {
@@ -17,5 +19,15 @@ public class AstBoolean extends Ast {
     public String toString() {
         return "Boolean [val=" + val + "]";
     }
+
+    public static Parser<Ast> parser = Parsers.AnyOf("&|?").Map(c ->  { switch (c) {
+        case '&': return new AstBoolean(BooleanType.True); 
+        case '|': return new AstBoolean(BooleanType.False); 
+        case '?': return new AstBoolean(BooleanType.Maybe); 
+        default:
+            return null;
+
+    }}
+    );
     
 }
