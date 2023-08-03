@@ -12,6 +12,6 @@ public class UnitTests {
 
         @Test
         public void test_basic() throws Exception {
-                System.out.println(AstControlFlow.parser.parse("stop aa").Unwrap());
+                System.out.println(Ast.parser.parse("stop stop ;skip").Unwrap());
         }
 }

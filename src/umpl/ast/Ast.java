@@ -7,14 +7,19 @@ import parser_combinator.Parser;
 import parser_combinator.Parsers;
 
 public class Ast {
-    public static Parser<Ast> parser = AstHempty.parser.Alt(AstBoolean.parser)
+    // needs to be its own new closure so that we don't have infinite recursion
+    // while creating the parser (so we add a level of indirection)
+    // also wih java if the a static thing is not fully initialized we get nullptr
+    // exceptions when calling this parser from other parsers
+    public static Parser<Ast> parser = new Parser<>((c) -> AstHempty.parser.Alt(AstBoolean.parser)
             .Alt(AstString.parser)
             .Alt(AstNumber.parser)
-            .Alt(AstIdent.parser)
             .Alt(AstLabel.parser)
-    // .Alt(AstControlFlow.parser)
-    // .Alt(AstQuoted.parser)
-    ;
+            .Alt(AstControlFlow.parser)
+            .Alt(AstQuoted.parser)
+            // ident parser should be placed last so it doesn't interfere with other
+            // statements like: if, stop,..
+            .Alt(AstIdent.parser).parse(c));
 
     protected static String[] whitespace = new String[] {
             " ", "\n", "\t"
