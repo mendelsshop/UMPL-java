@@ -14,6 +14,6 @@ public class UnitTests {
 
         @Test
         public void test_basic() throws Exception {
-                Ast.parser.parse("hempty").Unwrap();
+                System.out.println(Ast.parser.parse("@aaa/b").Unwrap());
         }
 }

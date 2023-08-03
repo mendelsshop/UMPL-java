@@ -4,13 +4,46 @@ package umpl.ast;
 import parser_combinator.Parser;
 
 public class Ast {
-    public static Parser<Ast> parser = AstHempty.parser.Alt(AstBoolean.parser).Alt(AstString.parser).Alt(AstControlFlow.parser).Alt(AstBoolean.parser);
+    public static  Parser<Ast> parser = AstHempty.parser.Alt(AstBoolean.parser)
+    .Alt(AstString.parser)
+    .Alt(AstNumber.parser)
+    .Alt(AstIdent.parser)
+    .Alt(AstLabel.parser)
+    // .Alt(AstControlFlow.parser)
+    // .Alt(AstQuoted.parser)
+    ;
 
     public static void main(String[] args) throws Exception {
         Ast ast = Ast.parser.parse("skip").Unwrap();
         System.out.println(ast);
     }
-}
+
+    protected static String[] special_char = new String[]{
+            "!", " ", "᚜", "᚛", ".", "&", "|", "?", "*", "+", "@", "\"", "\'", ";", "\n", "\t", "<",
+            ">", "^",
+    };
+
+    protected static String[] whitespace = new String[]{
+            " ", "\n", "\t"
+
+    };
+    
+    
+    protected static String[] call_start = new String[] {
+            "(", "༺", "༼", "⁅", "⁽", "₍", "⌈", "⌊", "❨", "❪", "❬", "❮", "❰", "❲", "❴", "⟅", "⟦", "⟨",
+            "⟪", "⟬", "⟮", "⦃", "⦅", "⦇", "⦉", "⦋", "⦍", "⦏", "⦑", "⦓", "⦕", "⦗", "⧘", "⧚", "⸢", "⸤",
+            "⸦", "⸨", "⹕", "⹗", "⹙", "⹛", "〈", "《", "「", "『", "【",
+            "〔", "〖", "〘", "〚", "﹙", "﹛", "﹝", "（", "［", "｛", "｟", "｢", "{", "[",
+        };
+    
+    protected static String[] call_end = new String[] {
+            ")", "༻", "༽", "⁆", "⁾", "₎", "⌉", "⌋", "❩", "❫", "❭", "❯", "❱", "❳", "❵", "⟆", "⟧", "⟩",
+            "⟫", "⟭", "⟯", "⦄", "⦆", "⦈", "⦊", "⦌", "⦎", "⦐", "⦒", "⦔", "⦖", "⦘", "⧙", "⧛", "⸣", "⸥",
+            "⸧", "⸩", "⹖", "⹘", "⹚", "⹜", "〉", "》", "」", "』", "】",
+            "〕", "〗", "〙", "〛", "﹚", "﹜", "﹞", "）", "］", "｝", "｠", "｣", "}", "]",
+};
+    }
+
 
 // pub enum UMPL2Expr {
 //     Bool(Boolean),done
@@ -36,10 +69,7 @@ public class Ast {
 //     Quoted(Box<UMPL2Expr>), done
 //     Label(RC<str>), done
 //     FnParam(usize),
-//     #[default]
 //     Hempty, done
 //     Link(RC<str>, Vec<RC<str>>),
-//     Tree(Tree),
-//     FnKW(FnKeyword),
 //     Let(RC<str>, Box<UMPL2Expr>),
 // }
