@@ -12,7 +12,7 @@ public class AstHempty extends Ast {
     public String toString() {
         return "Hempty";
     }
-    
+
     public static Parser<Ast> parser = Parsers.Matches("hempty").Map((i) -> new AstHempty());
-    
+
 }

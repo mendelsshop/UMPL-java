@@ -4,14 +4,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class Parser<T> {
-    private Function<Context, Result<T>> parser_function;
+import misc.Tuple;
+import misc.Result.Result;
 
-    public Function<Context, Result<T>> getParser() {
+public class Parser<T> {
+    private Function<Context, Result<OkResult<T>, ParseError>> parser_function;
+
+    public Function<Context, Result<OkResult<T>, ParseError>> getParser() {
         return parser_function;
     }
 
-    public Parser(Function<Context, Result<T>> parser_function) {
+    public Parser(Function<Context, Result<OkResult<T>, ParseError>> parser_function) {
         this.parser_function = parser_function;
     }
 
@@ -23,11 +26,11 @@ public class Parser<T> {
         return ParserCombinators.Map(this, mapper);
     }
 
-    public Result<T> parse(String input) {
-        return parser_function.apply(new Context(input));
+    public Result<T, ParseError> parse(String input) {
+        return parser_function.apply(new Context(input)).Map(OkResult::getResult);
     }
 
-    public Result<T> parse(Context input) {
+    public Result<OkResult<T>, ParseError> parse(Context input) {
         return parser_function.apply(input);
     }
 
@@ -74,6 +77,6 @@ public class Parser<T> {
 
     public Parser<T> Choice(List<Parser<T>> parsers) {
         parsers.add(0, this);
-        return (ParserCombinators.Choice( parsers.stream().map((p) -> p).toList()));
+        return (ParserCombinators.Choice(parsers.stream().map((p) -> p).toList()));
     }
 }

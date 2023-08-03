@@ -1,4 +1,4 @@
-package parser_combinator;
+package misc;
 
 public class Tuple<K, V> {
     K first;

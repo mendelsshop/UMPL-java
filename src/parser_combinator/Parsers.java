@@ -5,7 +5,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import parser_combinator.ErrorResult.ErrorReason;
+import parser_combinator.ParseError.ErrorReason;
 
 public class Parsers {
     public static Parser<Character> Satisfy(Function<Character, Boolean> satisfies) {
@@ -14,11 +14,11 @@ public class Parsers {
             if (maybeChar.isPresent()) {
                 char c = maybeChar.get();
                 if (satisfies.apply(c)) {
-                    return new OkResult<Character>(c, ctx.IncrementIndex());
+                    return OkResult.Ok(c, ctx.IncrementIndex());
                 }
-                return new ErrorResult<Character>(ErrorReason.MisMatch, ctx);
+                return ParseError.Err(ErrorReason.MisMatch, ctx);
             }
-            return new ErrorResult<Character>(ErrorReason.EOF, ctx);
+            return ParseError.Err(ErrorReason.EOF, ctx);
         });
     }
 
@@ -51,7 +51,7 @@ public class Parsers {
     }
 
     public static <T> Parser<T> Fail() {
-        return new Parser<>((ctx) -> new ErrorResult<T>(ErrorReason.Fail, ctx));
+        return new Parser<>((ctx) -> ParseError.Err(ErrorReason.Fail, ctx));
     }
 
     public static Parser<String> Matches(String s) {

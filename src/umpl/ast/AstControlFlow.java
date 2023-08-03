@@ -26,10 +26,11 @@ public class AstControlFlow extends Ast {
     }
 
     private static Parser<Ast> skip_parser = Parsers.Matches("skip").Map(c -> new AstControlFlow(ControlFlowType.Skip));
-    
-    private static final Parser<Ast> stop_parser = Ast.parser.KeepRight(Parsers.Matches("stop").KeepLeft(Ast.whitespacecommentParser))
+
+    private static final Parser<Ast> stop_parser = Ast.parser
+            .KeepRight(Parsers.Matches("stop").KeepLeft(Ast.whitespacecommentParser))
             .Map(t -> new AstControlFlow(t, ControlFlowType.Stop));
-            
+
     public static Parser<Ast> parser = stop_parser.Alt(skip_parser);
 
     public Boolean isStop() {

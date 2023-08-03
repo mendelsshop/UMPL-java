@@ -10,11 +10,11 @@ public class AstLabel extends Ast {
 
     String val;
 
-    public static Parser<Ast> parser = AstIdent.identParser.KeepRight(Parsers.Matches('@')).Map(c->new AstLabel(c));
+    public static Parser<Ast> parser = AstIdent.identParser.KeepRight(Parsers.Matches('@')).Map(c -> new AstLabel(c));
 
     @Override
     public String toString() {
         return "Label [val=" + val + "]";
     }
-    
+
 }

@@ -7,14 +7,16 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import parser_combinator.ErrorResult.ErrorReason;
-import parser_combinator.Result.ResultKind;
+import misc.Tuple;
+import misc.Result.Result;
+import misc.Result.Result.ResultKind;
+import parser_combinator.ParseError.ErrorReason;
 
 public class ParserCombinators {
     public static <T> Parser<T> Alt(Parser<T> p1,
             Parser<T> p2) {
         return new Parser<>((ctx) -> {
-            Result<T> result = p1.parse(ctx);
+            Result<OkResult<T>, ParseError> result = p1.parse(ctx);
             if (result.getType() == ResultKind.Ok) {
                 return result;
             }
@@ -22,41 +24,47 @@ public class ParserCombinators {
         });
     }
 
-    @SuppressWarnings("unchecked")
     public static <T, U> Parser<U> Map(Parser<T> p, Function<T, U> mapper) {
         return new Parser<>((ctx) -> {
-            Result<T> result = p.parse(ctx);
+            Result<OkResult<T>, ParseError> result = p.parse(ctx);
             if (result.getType() == ResultKind.Error) {
-                return (Result<U>) result;
+                return result.CastErrorUnsafe();
             }
-            OkResult<T> value = (OkResult<T>) result;
-            return new OkResult<U>(mapper.apply(value.getResult()), result.getContext());
+            OkResult<T> value = result.UnwrapUnsafe();
+            return OkResult.Ok(mapper.apply(value.getResult()), value.getContext());
         });
     }
 
-    @SuppressWarnings("unchecked")
     public static <T, U> Parser<Tuple<T, U>> Chain(Parser<T> p1,
             Parser<U> p2) {
         return new Parser<>((ctx) -> {
-            Result<T> r1 = p1.parse(ctx);
+            Result<OkResult<T>, ParseError> r1 = p1.parse(ctx);
             if (r1.getType() == ResultKind.Error) {
-                return (Result<Tuple<T, U>>) r1;
+                return r1.CastErrorUnsafe();
             }
-            OkResult<T> v1 = (OkResult<T>) r1;
-            Result<U> r2 = p2.parse(v1.getContext());
+            OkResult<T> v1 = r1.UnwrapUnsafe();
+            Result<OkResult<U>, ParseError> r2 = p2.parse(v1.getContext());
             if (r2.getType() == ResultKind.Error) {
-                return (Result<Tuple<T, U>>) r2;
+                return r2.CastErrorUnsafe();
             }
-            OkResult<U> v2 = (OkResult<U>) r2;
-            return new OkResult<Tuple<T, U>>(new Tuple<T, U>(v1.getResult(), v2.getResult()), r2.getContext());
+            OkResult<U> v2 = r2.UnwrapUnsafe();
+            return OkResult.Ok(new Tuple<T, U>(v1.getResult(), v2.getResult()), v2.getContext());
         });
     }
 
+    private static <T> Context getContext(Result<OkResult<T>, ParseError> result) {
+        if (result.getType() == ResultKind.Error) {
+            return result.UnwrapErrUnsafe().getContext();
+        } else {
+            return result.UnwrapUnsafe().getContext();
+        }
+    }
+
     public static <T> Parser<Optional<T>> Opt(Parser<T> p) {
-        return new Parser<>((ctx) -> {
-            Result<T> result = p.parse(ctx);
-            Optional<T> ret = result.Ok();
-            return new OkResult<Optional<T>>(ret, result.getContext());
+        return new Parser<Optional<T>>((ctx) -> {
+            Result<OkResult<T>, ParseError> result = p.parse(ctx);
+            Optional<T> ret = result.Ok().map(c -> c.getResult());
+            return OkResult.Ok(ret, getContext(result));
         });
     }
 
@@ -64,94 +72,90 @@ public class ParserCombinators {
         return new Parser<>((ctx) -> {
             List<T> results = new ArrayList<T>();
             while (true) {
-                Result<T> result = p.parse(ctx);
+                Result<OkResult<T>, ParseError> result = p.parse(ctx);
                 if (result.getType() == ResultKind.Error) {
                     if (results.isEmpty()) {
-                        return new OkResult<Optional<List<T>>>(Optional.empty(), ctx);
+                        return OkResult.Ok(Optional.empty(), ctx);
                     } else {
-                        return new OkResult<Optional<List<T>>>(Optional.of(results), ctx);
+                        return OkResult.Ok(Optional.of(results), ctx);
                     }
                 }
-                OkResult<T> value = (OkResult<T>) result;
+                OkResult<T> value = result.UnwrapUnsafe();
                 results.add(value.getResult());
                 ctx = value.getContext();
             }
         });
     }
 
-    @SuppressWarnings("unchecked")
     public static <T> Parser<List<T>> Many1(Parser<T> p) {
         return new Parser<>((ctx) -> {
-            Result<Optional<List<T>>> result = ParserCombinators.Many(p).parse(ctx);
+            Result<OkResult<Optional<List<T>>>, ParseError> result = ParserCombinators.Many(p).parse(ctx);
             if (result.getType() == ResultKind.Error) {
-                var error = (ErrorResult<?>) result;
-                return (Result<List<T>>) error;
+                return result.CastErrorUnsafe();
             }
-            var value = (OkResult<Optional<List<T>>>) result;
+            var value = (OkResult<Optional<List<T>>>) result.UnwrapUnsafe();
             if (value.getResult().isEmpty()) {
-                return new ErrorResult<>(ErrorReason.NoMatch, ctx);
+                return ParseError.Err(ErrorReason.NoMatch, ctx);
             }
-            return new OkResult<List<T>>(value.getResult().get(), value.getContext());
+            return OkResult.Ok(value.getResult().get(), value.getContext());
         });
     }
 
-    @SuppressWarnings("unchecked")
     public static <T> Parser<List<T>> Seq(Parser<T>[] parsers) {
-        return new Parser<>((ctx) -> {
+        return new Parser<List<T>>((ctx) -> {
             List<T> results = new ArrayList<T>();
             for (var parser : parsers) {
-                Result<T> result = parser.parse(ctx);
+                Result<OkResult<T>, ParseError> result = parser.parse(ctx);
                 if (result.getType() == ResultKind.Error) {
                     // TODO: return error with consumed context
-                    return (Result<List<T>>) result;
+                    return result.CastErrorUnsafe();
                 }
-                var value = (OkResult<T>) result;
+                var value = (OkResult<T>) result.UnwrapUnsafe();
                 ctx = value.getContext();
                 results.add(value.getResult());
             }
-            return new OkResult<>(results, ctx);
+            return OkResult.Ok(results, ctx);
         });
     }
 
-    @SuppressWarnings("unchecked")
-    public static <T> Parser<List<T>> Seq(List<Parser<T>>parsers) {
+    public static <T> Parser<List<T>> Seq(List<Parser<T>> parsers) {
         return new Parser<>((ctx) -> {
             List<T> results = new ArrayList<T>();
             for (var parser : parsers) {
-                Result<T> result = parser.parse(ctx);
+                Result<OkResult<T>, ParseError> result = parser.parse(ctx);
                 if (result.getType() == ResultKind.Error) {
                     // TODO: return error with consumed context
-                    return (Result<List<T>>) result;
+                    return result.CastErrorUnsafe();
                 }
-                var value = (OkResult<T>) result;
+                var value = (OkResult<T>) result.UnwrapUnsafe();
                 ctx = value.getContext();
                 results.add(value.getResult());
             }
-            return new OkResult<>(results, ctx);
+            return OkResult.Ok(results, ctx);
         });
     }
 
     public static <T> Parser<T> Choice(Parser<T>[] parsers) {
         return new Parser<>((ctx) -> {
             for (var parser : parsers) {
-                Result<T> result = parser.parse(ctx);
+                Result<OkResult<T>, ParseError> result = parser.parse(ctx);
                 if (result.getType() == ResultKind.Ok) {
                     return result;
                 }
             }
-            return new ErrorResult<>(ErrorReason.NoMatch, ctx);
+            return ParseError.Err(ErrorReason.NoMatch, ctx);
         });
     }
 
     public static <T> Parser<T> Choice(List<Parser<T>> parsers) {
         return new Parser<>((ctx) -> {
             for (var parser : parsers) {
-                Result<T> result = parser.parse(ctx);
+                Result<OkResult<T>, ParseError> result = parser.parse(ctx);
                 if (result.getType() == ResultKind.Ok) {
                     return result;
                 }
             }
-            return new ErrorResult<>(ErrorReason.NoMatch, ctx);
+            return ParseError.Err(ErrorReason.NoMatch, ctx);
         });
     }
 
@@ -161,21 +165,21 @@ public class ParserCombinators {
         return new Parser<Optional<List<T>>>((ctx) -> {
             var first_r = p.parse(ctx);
             if (first_r.getType() == ResultKind.Error) {
-                return new OkResult<>(Optional.empty(), ctx);
+                return OkResult.Ok(Optional.empty(), ctx);
             }
-            var first_v = (OkResult<T>) first_r;
+            var first_v = (OkResult<T>) first_r.UnwrapUnsafe();
             var rest_r = rest_p.parse(first_v.getContext());
             var res = new ArrayList<T>();
             res.add(first_v.getResult());
             if (rest_r.getType() == ResultKind.Error) {
-                return new OkResult<Optional<List<T>>>(Optional.of(res), first_v.getContext());
+                return OkResult.Ok(Optional.of(res), first_v.getContext());
             }
-            var rest_v = (OkResult<Optional<List<T>>>) rest_r;
+            var rest_v = (OkResult<Optional<List<T>>>) rest_r.UnwrapUnsafe();
             if (rest_v.getResult().isEmpty()) {
 
-                return new OkResult<Optional<List<T>>>(Optional.of(res), first_v.getContext());
+                return OkResult.Ok(Optional.of(res), first_v.getContext());
             }
-            return new OkResult<Optional<List<T>>>(
+            return OkResult.Ok(
                     Optional.of(Stream.concat(res.stream(), rest_v.getResult().get().stream())
                             .collect(Collectors.toList())),
                     rest_v.getContext());
@@ -183,20 +187,18 @@ public class ParserCombinators {
         });
     }
 
-    @SuppressWarnings("unchecked")
     public static <T, U> Parser<List<T>> Sep1(Parser<T> p,
             Parser<U> delim) {
         return new Parser<>((ctx) -> {
-            Result<Optional<List<T>>> result = ParserCombinators.Sep(p, delim).parse(ctx);
+            Result<OkResult<Optional<List<T>>>, ParseError> result = ParserCombinators.Sep(p, delim).parse(ctx);
             if (result.getType() == ResultKind.Error) {
-                var error = (ErrorResult<?>) result;
-                return (Result<List<T>>) error;
+                return result.CastErrorUnsafe();
             }
-            var value = (OkResult<Optional<List<T>>>) result;
+            var value = (OkResult<Optional<List<T>>>) result.UnwrapUnsafe();
             if (value.getResult().isEmpty()) {
-                return new ErrorResult<>(ErrorReason.NoMatch, ctx);
+                return ParseError.Err(ErrorReason.NoMatch, ctx);
             }
-            return new OkResult<List<T>>(value.getResult().get(), value.getContext());
+            return OkResult.Ok(value.getResult().get(), value.getContext());
         });
     }
 

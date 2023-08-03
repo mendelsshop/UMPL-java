@@ -7,12 +7,13 @@ public class AstBoolean extends Ast {
     public AstBoolean(BooleanType val) {
         this.val = val;
     }
+
     public enum BooleanType {
         True,
         False,
         Maybe,
     }
-    
+
     BooleanType val;
 
     @Override
@@ -20,14 +21,18 @@ public class AstBoolean extends Ast {
         return "Boolean [val=" + val + "]";
     }
 
-    public static Parser<Ast> parser = Parsers.AnyOf("&|?").Map(c ->  { switch (c) {
-        case '&': return new AstBoolean(BooleanType.True); 
-        case '|': return new AstBoolean(BooleanType.False); 
-        case '?': return new AstBoolean(BooleanType.Maybe); 
-        default:
-            return null;
+    public static Parser<Ast> parser = Parsers.AnyOf("&|?").Map(c -> {
+        switch (c) {
+            case '&':
+                return new AstBoolean(BooleanType.True);
+            case '|':
+                return new AstBoolean(BooleanType.False);
+            case '?':
+                return new AstBoolean(BooleanType.Maybe);
+            default:
+                return null;
 
-    }}
-    );
-    
+        }
+    });
+
 }
