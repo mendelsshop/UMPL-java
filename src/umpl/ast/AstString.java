@@ -19,7 +19,7 @@ public class AstString extends Ast {
         return "String [val=" + val + "]";
     }
 
-    public static Parser<Ast> parser = Parsers.NotMatches('.').Many()
+    public static final Parser<Ast> parser = Parsers.NotMatches('.').Many()
             .InBetween(Parsers.Matches('.'), Parsers.Matches('.'))
             .Map((Optional<List<Character>> i) -> new AstString(i.map(Parsers::listToString).orElse("")));
 

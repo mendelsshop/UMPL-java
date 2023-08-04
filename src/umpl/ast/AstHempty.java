@@ -13,6 +13,6 @@ public class AstHempty extends Ast {
         return "Hempty";
     }
 
-    public static Parser<Ast> parser = Parsers.Matches("hempty").Map((i) -> new AstHempty());
+    public static final Parser<Ast> parser = Parsers.Matches("hempty").Map((i) -> new AstHempty());
 
 }

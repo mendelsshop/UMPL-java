@@ -7,55 +7,61 @@ import parser_combinator.Parser;
 import parser_combinator.Parsers;
 
 public class Ast {
-    // needs to be its own new closure so that we don't have infinite recursion
-    // while creating the parser (so we add a level of indirection)
-    // also wih java if the a static thing is not fully initialized we get nullptr
-    // exceptions when calling this parser from other parsers
-    public static Parser<Ast> parser = new Parser<>((c) -> AstHempty.parser.Alt(AstBoolean.parser)
-            .Alt(AstString.parser)
-            .Alt(AstNumber.parser)
-            .Alt(AstLabel.parser)
-            .Alt(AstControlFlow.parser)
-            .Alt(AstQuoted.parser)
-            // ident parser should be placed last so it doesn't interfere with other
-            // statements like: if, stop,..
-            .Alt(AstIdent.parser).parse(c));
 
-    protected static String[] whitespace = new String[] {
-            " ", "\n", "\t"
+        protected static String[] whitespace = new String[] {
+                        " ", "\n", "\t"
 
-    };
+        };
 
-    public static Parser<Unit> commentParser = Parsers.Matches('!').Chain(Parsers.NotMatches('\n').Many())
-            .Chain(Parsers.Matches("\n")).Map(c -> new Unit());
+        public static final Parser<Unit> commentParser = Parsers.Matches('!').Chain(Parsers.NotMatches('\n').Many())
+                        .Chain(Parsers.Matches("\n")).Map(c -> new Unit());
 
-    public static Parser<Unit> whitespaceParser = Parsers.Satisfy(c -> Arrays.asList(whitespace).contains(c.toString()))
-            .Map(c -> new Unit());
-    public static Parser<Unit> whitespacecommentParser = commentParser.Alt(whitespaceParser).Many()
-            .Map(c -> new Unit());
-    protected static String[] special_char = new String[] {
-            "!", " ", "᚜", "᚛", ".", "&", "|", "?", "*", "+", "@", "\"", "\'", ";", "\n", "\t", "<",
-            ">", "^",
-    };
+        public static final Parser<Unit> whitespaceParser = Parsers
+                        .Satisfy(c -> Arrays.asList(whitespace).contains(c.toString()))
+                        .Map(c -> new Unit());
+        public static final Parser<Unit> whitespacecommentParser = commentParser.Alt(whitespaceParser).Many1()
+                        .Map(c -> new Unit());
+        public static final Parser<Unit> whitespacecommentParserOpt = commentParser.Alt(whitespaceParser).Many()
+                        .Map(c -> new Unit());
+        // needs to be its own new closure so that we don't have infinite recursion
+        // while creating the parser (so we add a level of indirection)
+        // also wih java if the a static thing is not fully initialized we get nullptr
+        // exceptions when calling this parser from other parsers
+        public static final Parser<Ast> parser = new Parser<>(
+                        (c) -> AstHempty.parser.Alt(AstBoolean.parser).Alt(AstApplication.parser)
+                                        .Alt(AstString.parser)
+                                        .Alt(AstNumber.parser)
+                                        .Alt(AstLabel.parser)
+                                        .Alt(AstControlFlow.parser)
+                                        .Alt(AstQuoted.parser)
+                                        // ident parser should be placed last so it doesn't interfere with other
+                                        // statements like: if, stop,..
+                                        .Alt(AstIdent.parser).parse(c))
+                        .KeepRight(whitespacecommentParserOpt);
 
-    protected static String[] call_start = new String[] {
-            "(", "༺", "༼", "⁅", "⁽", "₍", "⌈", "⌊", "❨", "❪", "❬", "❮", "❰", "❲", "❴", "⟅", "⟦", "⟨",
-            "⟪", "⟬", "⟮", "⦃", "⦅", "⦇", "⦉", "⦋", "⦍", "⦏", "⦑", "⦓", "⦕", "⦗", "⧘", "⧚", "⸢", "⸤",
-            "⸦", "⸨", "⹕", "⹗", "⹙", "⹛", "〈", "《", "「", "『", "【",
-            "〔", "〖", "〘", "〚", "﹙", "﹛", "﹝", "（", "［", "｛", "｟", "｢", "{", "[",
-    };
+        protected static String[] special_char = new String[] {
+                        "!", " ", "᚜", "᚛", ".", "&", "|", "?", "*", "+", "@", "\"", "\'", ";", "\n", "\t", "<",
+                        ">", "^",
+        };
 
-    protected static String[] call_end = new String[] {
-            ")", "༻", "༽", "⁆", "⁾", "₎", "⌉", "⌋", "❩", "❫", "❭", "❯", "❱", "❳", "❵", "⟆", "⟧", "⟩",
-            "⟫", "⟭", "⟯", "⦄", "⦆", "⦈", "⦊", "⦌", "⦎", "⦐", "⦒", "⦔", "⦖", "⦘", "⧙", "⧛", "⸣", "⸥",
-            "⸧", "⸩", "⹖", "⹘", "⹚", "⹜", "〉", "》", "」", "』", "】",
-            "〕", "〗", "〙", "〛", "﹚", "﹜", "﹞", "）", "］", "｝", "｠", "｣", "}", "]",
-    };
+        protected static String[] call_start = new String[] {
+                        "(", "༺", "༼", "⁅", "⁽", "₍", "⌈", "⌊", "❨", "❪", "❬", "❮", "❰", "❲", "❴", "⟅", "⟦", "⟨",
+                        "⟪", "⟬", "⟮", "⦃", "⦅", "⦇", "⦉", "⦋", "⦍", "⦏", "⦑", "⦓", "⦕", "⦗", "⧘", "⧚", "⸢", "⸤",
+                        "⸦", "⸨", "⹕", "⹗", "⹙", "⹛", "〈", "《", "「", "『", "【",
+                        "〔", "〖", "〘", "〚", "﹙", "﹛", "﹝", "（", "［", "｛", "｟", "｢", "{", "[",
+        };
 
-    public static void main(String[] args) throws Exception {
-        Ast ast = Ast.parser.parse("skip").Unwrap();
-        System.out.println(ast);
-    }
+        protected static String[] call_end = new String[] {
+                        ")", "༻", "༽", "⁆", "⁾", "₎", "⌉", "⌋", "❩", "❫", "❭", "❯", "❱", "❳", "❵", "⟆", "⟧", "⟩",
+                        "⟫", "⟭", "⟯", "⦄", "⦆", "⦈", "⦊", "⦌", "⦎", "⦐", "⦒", "⦔", "⦖", "⦘", "⧙", "⧛", "⸣", "⸥",
+                        "⸧", "⸩", "⹖", "⹘", "⹚", "⹜", "〉", "》", "」", "』", "】",
+                        "〕", "〗", "〙", "〛", "﹚", "﹜", "﹞", "）", "］", "｝", "｠", "｣", "}", "]",
+        };
+
+        public static void main(String[] args) throws Exception {
+                Ast ast = Ast.parser.parse("skip").Unwrap();
+                System.out.println(ast);
+        }
 }
 
 // pub enum UMPL2Expr {

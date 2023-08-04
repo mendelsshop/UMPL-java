@@ -11,9 +11,10 @@ public class AstNumber extends Ast {
     }
 
     double val;
-    private static Parser<Character> digit = Parsers.Digit();
-    private static Parser<Character> hexadigit = digit.Alt(Parsers.AnyOf("abcdef"));
-    public static Parser<Ast> parser = hexadigit.Many1().Chain(hexadigit.Many1().KeepRight(Parsers.Matches('%')).Opt())
+    private static final Parser<Character> digit = Parsers.Digit();
+    private static final Parser<Character> hexadigit = digit.Alt(Parsers.AnyOf("abcdef"));
+    public static final Parser<Ast> parser = hexadigit.Many1()
+            .Chain(hexadigit.Many1().KeepRight(Parsers.Matches('%')).Opt())
             .KeepRight(Parsers.Matches("0x"))
             .Alt(digit.Many1().Chain(digit.Many1().KeepRight(Parsers.Matches('%')).Opt())).Map(c -> {
                 String number = String.format("0x%s.", Parsers.listToString(c.getFirst()));

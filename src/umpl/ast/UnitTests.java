@@ -12,6 +12,6 @@ public class UnitTests {
 
         @Test
         public void test_basic() throws Exception {
-                System.out.println(Ast.parser.parse("stop stop ;skip").Unwrap());
+                System.out.println(Ast.parser.parse("     stop  !a\n  stop ;( a    1 0xa5%6) >>").Unwrap());
         }
 }

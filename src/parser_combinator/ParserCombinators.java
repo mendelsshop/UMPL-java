@@ -163,6 +163,7 @@ public class ParserCombinators {
             Parser<U> delim) {
         var rest_p = ParserCombinators.Many(ParserCombinators.KeepRight(delim, p));
         return new Parser<Optional<List<T>>>((ctx) -> {
+            // parse first thing
             var first_r = p.parse(ctx);
             if (first_r.getType() == ResultKind.Error) {
                 return OkResult.Ok(Optional.empty(), ctx);

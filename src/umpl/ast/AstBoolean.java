@@ -21,7 +21,7 @@ public class AstBoolean extends Ast {
         return "Boolean [val=" + val + "]";
     }
 
-    public static Parser<Ast> parser = Parsers.AnyOf("&|?").Map(c -> {
+    public static final Parser<Ast> parser = Parsers.AnyOf("&|?").Map(c -> {
         switch (c) {
             case '&':
                 return new AstBoolean(BooleanType.True);
