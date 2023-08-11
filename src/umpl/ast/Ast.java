@@ -34,6 +34,7 @@ public class Ast {
                                         .Alt(AstLabel.parser)
                                         .Alt(AstControlFlow.parser)
                                         .Alt(AstQuoted.parser)
+                                        .Alt(AstFnParam.parser)
                                         // ident parser should be placed last so it doesn't interfere with other
                                         // statements like: if, stop,..
                                         .Alt(AstIdent.parser).parse(c))
@@ -59,7 +60,7 @@ public class Ast {
         };
 
         public static void main(String[] args) throws Exception {
-                Ast ast = Ast.parser.parse("skip").Unwrap();
+                Ast ast = Ast.parser.parse("stop 'a").Unwrap();
                 System.out.println(ast);
         }
 }
@@ -84,10 +85,10 @@ public class Ast {
 // ContiueDoing(Vec<UMPL2Expr>),
 // // last one is scope
 // Fanction(Fanction),
-// Application(Application),
+// Application(Application), done
 // Quoted(Box<UMPL2Expr>), done
 // Label(RC<str>), done
-// FnParam(usize),
+// FnParam(usize), done
 // Hempty, done
 // Link(RC<str>, Vec<RC<str>>),
 // Let(RC<str>, Box<UMPL2Expr>),
