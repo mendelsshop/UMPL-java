@@ -35,6 +35,10 @@ public class Ast {
                                         .Alt(AstControlFlow.parser)
                                         .Alt(AstQuoted.parser)
                                         .Alt(AstFnParam.parser)
+                                        .Alt(AstIf.parser)
+                                        .Alt(AstUnless.parser)
+                                        .Alt(AstLink.parser)
+                                        .Alt(AstLet.parser)
                                         // ident parser should be placed last so it doesn't interfere with other
                                         // statements like: if, stop,..
                                         .Alt(AstIdent.parser).parse(c))
@@ -60,7 +64,7 @@ public class Ast {
         };
 
         public static void main(String[] args) throws Exception {
-                Ast ast = Ast.parser.parse("stop 'a").Unwrap();
+                Ast ast = Ast.parser.parse("link @a @b @c a").Unwrap();
                 System.out.println(ast);
         }
 }
@@ -69,12 +73,12 @@ public class Ast {
 // Bool(Boolean),done
 // Number(f64), done
 // String(RC<str>), done
-// Scope(Vec<UMPL2Expr>),
+// Scope(Vec<UMPL2Expr>), done
 // Ident(RC<str>), done
 // // second 2 are scopes
-// If(Box<If>),
+// If(Box<If>), done
 // // second 2 are scopes
-// Unless(Box<Unless>),
+// Unless(Box<Unless>), done
 // Stop(Box<UMPL2Expr>),done
 // Skip, done
 // // last one is scope
@@ -90,6 +94,6 @@ public class Ast {
 // Label(RC<str>), done
 // FnParam(usize), done
 // Hempty, done
-// Link(RC<str>, Vec<RC<str>>),
-// Let(RC<str>, Box<UMPL2Expr>),
+// Link(RC<str>, Vec<RC<str>>), done
+// Let(RC<str>, Box<UMPL2Expr>), done
 // }
