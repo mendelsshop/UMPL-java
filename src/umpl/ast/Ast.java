@@ -39,6 +39,9 @@ public class Ast {
                                         .Alt(AstUnless.parser)
                                         .Alt(AstLink.parser)
                                         .Alt(AstLet.parser)
+                                        .Alt(AstGoThrough.parser)
+                                        .Alt(AstContinueDoing.parser)
+                                        .Alt(AstUntil.parser)
                                         // ident parser should be placed last so it doesn't interfere with other
                                         // statements like: if, stop,..
                                         .Alt(AstIdent.parser).parse(c))
@@ -67,33 +70,34 @@ public class Ast {
                 Ast ast = Ast.parser.parse("link @a @b @c a").Unwrap();
                 System.out.println(ast);
         }
+
 }
 
 // pub enum UMPL2Expr {
-// Bool(Boolean),done
-// Number(f64), done
-// String(RC<str>), done
-// Scope(Vec<UMPL2Expr>), done
-// Ident(RC<str>), done
+// Bool(Boolean),done c
+// Number(f64), done c
+// String(RC<str>), done c
+// Scope(Vec<UMPL2Expr>), done c
+// Ident(RC<str>), done c
 // // second 2 are scopes
-// If(Box<If>), done
+// If(Box<If>), done c
 // // second 2 are scopes
-// Unless(Box<Unless>), done
-// Stop(Box<UMPL2Expr>),done
-// Skip, done
+// Unless(Box<Unless>), done c
+// Stop(Box<UMPL2Expr>),done c
+// Skip, done c
 // // last one is scope
-// Until(Box<Until>),
+// Until(Box<Until>), done c
 // // last one is scope
-// GoThrough(Box<GoThrough>),
+// GoThrough(Box<GoThrough>), done c
 // // last one is scope
-// ContiueDoing(Vec<UMPL2Expr>),
+// ContiueDoing(Vec<UMPL2Expr>), done c
 // // last one is scope
 // Fanction(Fanction),
-// Application(Application), done
-// Quoted(Box<UMPL2Expr>), done
-// Label(RC<str>), done
+// Application(Application), done c
+// Quoted(Box<UMPL2Expr>), done c
+// Label(RC<str>), done c
 // FnParam(usize), done
-// Hempty, done
-// Link(RC<str>, Vec<RC<str>>), done
-// Let(RC<str>, Box<UMPL2Expr>), done
+// Hempty, done c
+// Link(RC<str>, Vec<RC<str>>), done c
+// Let(RC<str>, Box<UMPL2Expr>), done c
 // }
