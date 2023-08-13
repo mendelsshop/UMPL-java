@@ -42,6 +42,7 @@ public class Ast {
                                         .Alt(AstGoThrough.parser)
                                         .Alt(AstContinueDoing.parser)
                                         .Alt(AstUntil.parser)
+                                        .Alt(AstFunction.parser)
                                         // ident parser should be placed last so it doesn't interfere with other
                                         // statements like: if, stop,..
                                         .Alt(AstIdent.parser).parse(c))
