@@ -2,10 +2,17 @@ package umpl.ast;
 
 import java.util.Optional;
 
+import misc.Result.Result;
+
+import misc.Result.Ok;
 import parser_combinator.Parser;
 import parser_combinator.Parsers;
+import umpl.evaluation.Evaluator;
+import umpl.evaluation.EvaluatorError;
+import umpl.evaluation.IEvaluator;
+import umpl.evaluation.Stopper;
 
-public class AstNumber extends Ast {
+public class AstNumber extends Ast implements IEvaluator{
     public AstNumber(double val) {
         this.val = val;
     }
@@ -30,6 +37,11 @@ public class AstNumber extends Ast {
     @Override
     public String toString() {
         return "Number [val=" + val + "]";
+    }
+
+    @Override
+    public Result<Result<Ast, Stopper>, EvaluatorError> evaluate(Evaluator state) {
+        return new Ok<>(new Ok<>(this));
     }
 
 }
