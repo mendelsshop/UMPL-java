@@ -6,10 +6,9 @@ import parser_combinator.Parser;
 import parser_combinator.Parsers;
 import umpl.evaluation.Evaluator;
 import umpl.evaluation.EvaluatorError;
-import umpl.evaluation.IEvaluator;
 import umpl.evaluation.Stopper;
 
-public class AstHempty extends Ast implements IEvaluator {
+public class AstHempty extends Ast {
     public AstHempty() {
 
     }
@@ -21,7 +20,7 @@ public class AstHempty extends Ast implements IEvaluator {
 
     public static final Parser<Ast> parser = Parsers.Matches("hempty").Map((i) -> new AstHempty());
 
-        @Override
+    @Override
     public Result<Result<Ast, Stopper>, EvaluatorError> evaluate(Evaluator state) {
         return new Ok<>(new Ok<>(this));
     }

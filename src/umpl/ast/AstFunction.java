@@ -36,7 +36,9 @@ public class AstFunction extends Ast {
             .Chain(Parsers
                     .Matches('*').Map(c -> Variadic.AtLeast0).Alt(Parsers.Matches('+').Map(c -> Variadic.AtLeast1))
                     .KeepRight(Ast.whitespacecommentParserOpt).Opt())
-            .Chain(AstScope.parser.KeepRight(Ast.whitespacecommentParser)).Map(c -> new AstFunction(c.getFirst().getFirst().getFirst(), c.getFirst().getFirst().getSecond(), c.getFirst().getSecond(), c.getSecond()));
+            .Chain(AstScope.parser.KeepRight(Ast.whitespacecommentParser))
+            .Map(c -> new AstFunction(c.getFirst().getFirst().getFirst(), c.getFirst().getFirst().getSecond(),
+                    c.getFirst().getSecond(), c.getSecond()));
 
     @Override
     public String toString() {

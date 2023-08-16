@@ -9,10 +9,9 @@ import parser_combinator.Parser;
 import parser_combinator.Parsers;
 import umpl.evaluation.Evaluator;
 import umpl.evaluation.EvaluatorError;
-import umpl.evaluation.IEvaluator;
 import umpl.evaluation.Stopper;
 
-public class AstNumber extends Ast implements IEvaluator{
+public class AstNumber extends Ast {
     public AstNumber(double val) {
         this.val = val;
     }
