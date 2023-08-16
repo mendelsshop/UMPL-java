@@ -1,9 +1,15 @@
 package umpl.ast;
 
+import misc.Result.Ok;
+import misc.Result.Result;
 import parser_combinator.Parser;
 import parser_combinator.Parsers;
+import umpl.evaluation.Evaluator;
+import umpl.evaluation.EvaluatorError;
+import umpl.evaluation.IEvaluator;
+import umpl.evaluation.Stopper;
 
-public class AstBoolean extends Ast {
+public class AstBoolean extends Ast implements IEvaluator {
     public AstBoolean(BooleanType val) {
         this.val = val;
     }
@@ -34,5 +40,10 @@ public class AstBoolean extends Ast {
 
         }
     });
+
+        @Override
+    public Result<Result<Ast, Stopper>, EvaluatorError> evaluate(Evaluator state) {
+        return new Ok<>(new Ok<>(this));
+    }
 
 }
