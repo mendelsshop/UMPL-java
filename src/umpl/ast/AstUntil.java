@@ -2,8 +2,12 @@ package umpl.ast;
 
 import java.util.List;
 
+import misc.Result.Result;
 import parser_combinator.Parser;
 import parser_combinator.Parsers;
+import umpl.evaluation.Evaluator;
+import umpl.evaluation.EvaluatorError;
+import umpl.evaluation.Stopper;
 
 public class AstUntil extends Ast {
     @Override
@@ -23,4 +27,10 @@ public class AstUntil extends Ast {
             .Chain(AstScope.parser.KeepRight(
                     Parsers.Matches("then").InBetween(Ast.whitespacecommentParser, Ast.whitespacecommentParserOpt)))
             .Map(c -> new AstUntil(c.getFirst(), c.getSecond()));
+
+    @Override
+    public Result<Result<Ast, Stopper>, EvaluatorError> evaluate(Evaluator state) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'evaluate'");
+    }
 }

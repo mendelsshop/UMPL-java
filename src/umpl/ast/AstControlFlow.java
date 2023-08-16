@@ -2,8 +2,12 @@ package umpl.ast;
 
 import java.util.Optional;
 
+import misc.Result.Result;
 import parser_combinator.Parser;
 import parser_combinator.Parsers;
+import umpl.evaluation.Evaluator;
+import umpl.evaluation.EvaluatorError;
+import umpl.evaluation.Stopper;
 
 public class AstControlFlow extends Ast {
     private Optional<Ast> val;
@@ -57,6 +61,12 @@ public class AstControlFlow extends Ast {
         } else {
             return "AstControlFlow [kind=" + kind + "]";
         }
+    }
+
+    @Override
+    public Result<Result<Ast, Stopper>, EvaluatorError> evaluate(Evaluator state) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'evaluate'");
     }
 
 }

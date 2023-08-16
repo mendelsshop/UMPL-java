@@ -2,8 +2,12 @@ package umpl.ast;
 
 import java.util.List;
 
+import misc.Result.Result;
 import parser_combinator.Parser;
 import parser_combinator.Parsers;
+import umpl.evaluation.Evaluator;
+import umpl.evaluation.EvaluatorError;
+import umpl.evaluation.Stopper;
 
 // unless gets its own class b/c unless or if might have slightly different runtime semantics
 public class AstUnless extends Ast {
@@ -28,5 +32,11 @@ public class AstUnless extends Ast {
     @Override
     public String toString() {
         return "AstIf [condition=" + condition + ", consequent=" + consequent + ", alternative=" + alternative + "]";
+    }
+
+    @Override
+    public Result<Result<Ast, Stopper>, EvaluatorError> evaluate(Evaluator state) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'evaluate'");
     }
 }

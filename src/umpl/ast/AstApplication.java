@@ -4,8 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import misc.Result.Result;
 import parser_combinator.Parser;
 import parser_combinator.Parsers;
+import umpl.evaluation.Evaluator;
+import umpl.evaluation.EvaluatorError;
+import umpl.evaluation.Stopper;
 
 public class AstApplication extends Ast {
     public enum PrintType {
@@ -32,5 +36,11 @@ public class AstApplication extends Ast {
     @Override
     public String toString() {
         return "AstApplication [arguements=" + arguements + ", print=" + print + "]";
+    }
+
+    @Override
+    public Result<Result<Ast, Stopper>, EvaluatorError> evaluate(Evaluator state) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'evaluate'");
     }
 }

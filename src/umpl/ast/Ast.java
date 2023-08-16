@@ -5,9 +5,9 @@ import java.util.Arrays;
 import misc.Unit;
 import parser_combinator.Parser;
 import parser_combinator.Parsers;
+import umpl.evaluation.IEvaluator;
 
-public class Ast {
-
+public abstract class Ast implements IEvaluator{
         protected static String[] whitespace = new String[] {
                         " ", "\n", "\t"
 

@@ -5,8 +5,12 @@ import java.util.Optional;
 
 import com.vdurmont.emoji.EmojiManager;
 
+import misc.Result.Result;
 import parser_combinator.Parser;
 import parser_combinator.Parsers;
+import umpl.evaluation.Evaluator;
+import umpl.evaluation.EvaluatorError;
+import umpl.evaluation.Stopper;
 
 public class AstFunction extends Ast {
     Optional<Character> name;
@@ -38,5 +42,11 @@ public class AstFunction extends Ast {
     public String toString() {
         return "AstFunction [name=" + name + ", paramCount=" + paramCount + ", params=" + params + ", scope=" + scope
                 + "]";
+    }
+
+    @Override
+    public Result<Result<Ast, Stopper>, EvaluatorError> evaluate(Evaluator state) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'evaluate'");
     }
 }

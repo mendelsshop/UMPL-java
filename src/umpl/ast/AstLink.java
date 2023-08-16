@@ -2,8 +2,12 @@ package umpl.ast;
 
 import java.util.List;
 
+import misc.Result.Result;
 import parser_combinator.Parser;
 import parser_combinator.Parsers;
+import umpl.evaluation.Evaluator;
+import umpl.evaluation.EvaluatorError;
+import umpl.evaluation.Stopper;
 
 public class AstLink extends Ast {
     String GotoLabel;
@@ -22,6 +26,12 @@ public class AstLink extends Ast {
     @Override
     public String toString() {
         return "AstLink [GotoLabel=" + GotoLabel + ", ComeFromLabels=" + ComeFromLabels + "]";
+    }
+
+    @Override
+    public Result<Result<Ast, Stopper>, EvaluatorError> evaluate(Evaluator state) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'evaluate'");
     }
 
 }
