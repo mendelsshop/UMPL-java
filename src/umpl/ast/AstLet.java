@@ -1,11 +1,15 @@
 package umpl.ast;
 
+import misc.Result.Err;
+import misc.Result.Ok;
 import misc.Result.Result;
+import misc.Result.Result.ResultKind;
 import parser_combinator.Parser;
 import parser_combinator.Parsers;
 import umpl.evaluation.Evaluator;
 import umpl.evaluation.EvaluatorError;
 import umpl.evaluation.Stopper;
+import umpl.evaluation.EvaluatorError.Reason;
 
 public class AstLet extends Ast {
     String name;
@@ -28,7 +32,15 @@ public class AstLet extends Ast {
 
     @Override
     public Result<Result<Ast, Stopper>, EvaluatorError> evaluate(Evaluator state) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'evaluate'");
+        var valWrapped = value.evaluate(state);
+        if (valWrapped.getType() == ResultKind.Error) {
+            return valWrapped;
+        } else if (valWrapped.UnwrapUnsafe().getType() == ResultKind.Error) {
+            return valWrapped;
+        }
+        if (state.set(name, valWrapped.UnwrapUnsafe().UnwrapUnsafe())) {
+            return new Ok<>(new Ok<>(new AstHempty()));
+        }
+        return new Err<Result<Ast, Stopper>, EvaluatorError>(new EvaluatorError(Reason.VariableNotFound));
     }
 }

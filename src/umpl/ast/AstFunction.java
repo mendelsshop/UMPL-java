@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.vdurmont.emoji.EmojiManager;
 
+import misc.Result.Ok;
 import misc.Result.Result;
 import parser_combinator.Parser;
 import parser_combinator.Parsers;
@@ -48,7 +49,12 @@ public class AstFunction extends Ast {
 
     @Override
     public Result<Result<Ast, Stopper>, EvaluatorError> evaluate(Evaluator state) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'evaluate'");
+        // if it's a function (has a name) then we insert it into scope (with no name)
+        if (name.isPresent()) {
+            state.insert(name.get().toString(), new AstFunction(Optional.empty(), paramCount, params, scope));
+            return new Ok<>(new Ok<>(new AstHempty()));
+        }
+        // otherwise just return it
+        return new Ok<>(new Ok<>(this));
     }
 }
