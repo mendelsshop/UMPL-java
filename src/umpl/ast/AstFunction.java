@@ -11,7 +11,7 @@ import parser_combinator.Parser;
 import parser_combinator.Parsers;
 import umpl.evaluation.Evaluator;
 import umpl.evaluation.EvaluatorError;
-import umpl.evaluation.Stopper;
+
 
 public class AstFunction extends Ast {
     Optional<Character> name;
@@ -48,7 +48,7 @@ public class AstFunction extends Ast {
     }
 
     @Override
-    public Result<Result<Ast, Stopper>, EvaluatorError> evaluate(Evaluator state) {
+    public Result<Result<Ast, AstControlFlow>, EvaluatorError> evaluate(Evaluator state) {
         // if it's a function (has a name) then we insert it into scope (with no name)
         if (name.isPresent()) {
             state.insert(name.get().toString(), new AstFunction(Optional.empty(), paramCount, params, scope));

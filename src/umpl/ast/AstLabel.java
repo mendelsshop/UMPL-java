@@ -5,7 +5,7 @@ import parser_combinator.Parser;
 import parser_combinator.Parsers;
 import umpl.evaluation.Evaluator;
 import umpl.evaluation.EvaluatorError;
-import umpl.evaluation.Stopper;
+
 
 public class AstLabel extends Ast {
     public static final Parser<String> lableParser = AstIdent.identParser.KeepRight(Parsers.Matches('@'));
@@ -25,7 +25,7 @@ public class AstLabel extends Ast {
     }
 
     @Override
-    public Result<Result<Ast, Stopper>, EvaluatorError> evaluate(Evaluator state) {
+    public Result<Result<Ast, AstControlFlow>, EvaluatorError> evaluate(Evaluator state) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'evaluate'");
     }

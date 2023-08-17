@@ -5,7 +5,7 @@ import parser_combinator.Parser;
 import parser_combinator.Parsers;
 import umpl.evaluation.Evaluator;
 import umpl.evaluation.EvaluatorError;
-import umpl.evaluation.Stopper;
+
 
 public class AstQuoted extends Ast {
     public AstQuoted(Ast val) {
@@ -22,7 +22,7 @@ public class AstQuoted extends Ast {
     }
 
     @Override
-    public Result<Result<Ast, Stopper>, EvaluatorError> evaluate(Evaluator state) {
+    public Result<Result<Ast, AstControlFlow>, EvaluatorError> evaluate(Evaluator state) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'evaluate'");
     }

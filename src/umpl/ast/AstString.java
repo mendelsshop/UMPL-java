@@ -9,7 +9,7 @@ import parser_combinator.Parser;
 import parser_combinator.Parsers;
 import umpl.evaluation.Evaluator;
 import umpl.evaluation.EvaluatorError;
-import umpl.evaluation.Stopper;
+
 
 public class AstString extends Ast {
 
@@ -29,7 +29,7 @@ public class AstString extends Ast {
             .Map((Optional<List<Character>> i) -> new AstString(i.map(Parsers::listToString).orElse("")));
 
     @Override
-    public Result<Result<Ast, Stopper>, EvaluatorError> evaluate(Evaluator state) {
+    public Result<Result<Ast, AstControlFlow>, EvaluatorError> evaluate(Evaluator state) {
         return new Ok<>(new Ok<>(this));
     }
 

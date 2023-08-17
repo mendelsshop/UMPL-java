@@ -8,7 +8,7 @@ import parser_combinator.Parser;
 import parser_combinator.Parsers;
 import umpl.evaluation.Evaluator;
 import umpl.evaluation.EvaluatorError;
-import umpl.evaluation.Stopper;
+
 import umpl.evaluation.EvaluatorError.Reason;
 
 public class AstLet extends Ast {
@@ -31,7 +31,7 @@ public class AstLet extends Ast {
     }
 
     @Override
-    public Result<Result<Ast, Stopper>, EvaluatorError> evaluate(Evaluator state) {
+    public Result<Result<Ast, AstControlFlow>, EvaluatorError> evaluate(Evaluator state) {
         var valWrapped = value.evaluate(state);
         if (valWrapped.getType() == ResultKind.Error) {
             return valWrapped;
@@ -41,6 +41,6 @@ public class AstLet extends Ast {
         if (state.set(name, valWrapped.UnwrapUnsafe().UnwrapUnsafe())) {
             return new Ok<>(new Ok<>(new AstHempty()));
         }
-        return new Err<Result<Ast, Stopper>, EvaluatorError>(new EvaluatorError(Reason.VariableNotFound));
+        return new Err<Result<Ast, AstControlFlow>, EvaluatorError>(new EvaluatorError(Reason.VariableNotFound));
     }
 }
