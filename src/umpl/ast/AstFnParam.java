@@ -1,11 +1,13 @@
 package umpl.ast;
 
+import misc.Result.Err;
+import misc.Result.Ok;
 import misc.Result.Result;
 import parser_combinator.Parser;
 import parser_combinator.Parsers;
 import umpl.evaluation.Evaluator;
 import umpl.evaluation.EvaluatorError;
-
+import umpl.evaluation.EvaluatorError.Reason;
 
 // maybe should extend AstIdent
 public class AstFnParam extends Ast {
@@ -27,7 +29,10 @@ public class AstFnParam extends Ast {
 
     @Override
     public Result<Result<Ast, AstControlFlow>, EvaluatorError> evaluate(Evaluator state) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'evaluate'");
+        return (state.get(String.valueOf(val)).map(
+                c -> (Result<Result<Ast, AstControlFlow>, EvaluatorError>) new Ok<Result<Ast, AstControlFlow>, EvaluatorError>(
+                        new Ok<>(c))))
+                .orElse(new Err<>(new EvaluatorError(Reason.VariableNotFound)));
+
     }
 }
