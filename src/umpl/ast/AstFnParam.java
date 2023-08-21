@@ -5,6 +5,7 @@ import misc.Result.Ok;
 import misc.Result.Result;
 import parser_combinator.Parser;
 import parser_combinator.Parsers;
+import umpl.analyzer.Anaylzer;
 import umpl.evaluation.Evaluator;
 import umpl.evaluation.EvaluatorError;
 import umpl.evaluation.EvaluatorError.Reason;
@@ -34,5 +35,13 @@ public class AstFnParam extends Ast {
                         new Ok<>(c))))
                 .orElse(new Err<>(new EvaluatorError(Reason.VariableNotFound)));
 
+    }
+
+    @Override
+    public void analyze_links(Anaylzer analyzer) {
+    }
+
+    @Override
+    public void analyze_labels(Anaylzer analyzer) {
     }
 }

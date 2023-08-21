@@ -7,9 +7,9 @@ import misc.Result.Result;
 import misc.Result.Ok;
 import parser_combinator.Parser;
 import parser_combinator.Parsers;
+import umpl.analyzer.Anaylzer;
 import umpl.evaluation.Evaluator;
 import umpl.evaluation.EvaluatorError;
-
 
 public class AstNumber extends Ast {
     public AstNumber(double val) {
@@ -41,6 +41,14 @@ public class AstNumber extends Ast {
     @Override
     public Result<Result<Ast, AstControlFlow>, EvaluatorError> evaluate(Evaluator state) {
         return new Ok<>(new Ok<>(this));
+    }
+
+    @Override
+    public void analyze_links(Anaylzer analyzer) {
+    }
+
+    @Override
+    public void analyze_labels(Anaylzer analyzer) {
     }
 
 }

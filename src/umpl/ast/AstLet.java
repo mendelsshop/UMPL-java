@@ -6,6 +6,7 @@ import misc.Result.Result;
 import misc.Result.Result.ResultKind;
 import parser_combinator.Parser;
 import parser_combinator.Parsers;
+import umpl.analyzer.Anaylzer;
 import umpl.evaluation.Evaluator;
 import umpl.evaluation.EvaluatorError;
 
@@ -42,5 +43,15 @@ public class AstLet extends Ast {
             return new Ok<>(new Ok<>(new AstHempty()));
         }
         return new Err<Result<Ast, AstControlFlow>, EvaluatorError>(new EvaluatorError(Reason.VariableNotFound));
+    }
+
+    @Override
+    public void analyze_links(Anaylzer analyzer) {
+        value.analyze_links(analyzer);
+    }
+
+    @Override
+    public void analyze_labels(Anaylzer analyzer) {
+        value.analyze_labels(analyzer);
     }
 }

@@ -8,6 +8,7 @@ import misc.Result.Ok;
 import misc.Result.Result;
 import parser_combinator.Parser;
 import parser_combinator.Parsers;
+import umpl.analyzer.Anaylzer;
 import umpl.evaluation.Evaluator;
 import umpl.evaluation.EvaluatorError;
 
@@ -39,6 +40,14 @@ public class AstIdent extends Ast {
             return new Err<Result<Ast, AstControlFlow>, EvaluatorError>(new EvaluatorError(Reason.VariableNotFound));
         }
         return new Ok<>(new Ok<>(value.get()));
+    }
+
+    @Override
+    public void analyze_links(Anaylzer analyzer) {
+    }
+
+    @Override
+    public void analyze_labels(Anaylzer analyzer) {
     }
 
 }
