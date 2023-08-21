@@ -1,11 +1,14 @@
 package umpl.ast;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.function.Function;
 
 import misc.Unit;
 import parser_combinator.Parser;
 import parser_combinator.Parsers;
 import umpl.analyzer.IAnalyzer;
+import umpl.ast.AstApplication.PrintType;
 import umpl.evaluation.IEvaluator;
 
 public abstract class Ast implements IEvaluator, IAnalyzer {
@@ -47,7 +50,16 @@ public abstract class Ast implements IEvaluator, IAnalyzer {
                                         // ident parser should be placed last so it doesn't interfere with other
                                         // statements like: if, stop,..
                                         .Alt(AstIdent.parser).parse(c))
-                        .KeepRight(whitespacecommentParserOpt);
+                        .KeepRight(whitespacecommentParserOpt)
+                        .Chain(Parsers.Matches("car").Alt(Parsers.Matches("cdr").Alt(Parsers.Matches("cgr")))
+                                        .KeepRight(Parsers.Matches('^')).Many())
+                        .Map(c -> {
+                                var expr = c.getFirst();
+                                for (String accesor : c.getSecond().orElse(new ArrayList<>())) {
+                                        expr = make_accces(expr, accesor);
+                                }
+                                return expr;
+                        });
 
         protected static String[] special_char = new String[] {
                         "!", " ", "᚜", "᚛", ".", "&", "|", "?", "*", "+", "@", "\"", "\'", ";", "\n", "\t", "<",
@@ -71,6 +83,10 @@ public abstract class Ast implements IEvaluator, IAnalyzer {
         public static void main(String[] args) throws Exception {
                 Ast ast = Ast.parser.parse("link @a @b @c a").Unwrap();
                 System.out.println(ast);
+        }
+
+        private static Ast make_accces(Ast expr, String accesor) {
+                return new AstApplication(Arrays.asList(new Ast[] { new AstIdent(accesor), expr }), PrintType.None);
         }
 
 }
