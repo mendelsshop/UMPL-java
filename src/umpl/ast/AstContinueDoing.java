@@ -33,14 +33,14 @@ public class AstContinueDoing extends Ast {
 
     @Override
     public Ast analyze_links(Anaylzer analyzer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'analyze_links'");
+        loopScope = loopScope.stream().<Ast>map(c->c.analyze_links(analyzer)).toList();
+        return this;
     }
 
     @Override
     public Ast analyze_labels(Anaylzer analyzer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'analyze_labels'");
+        loopScope = loopScope.stream().<Ast>map(c->c.analyze_labels(analyzer)).toList();
+        return this;
     }
 
 }

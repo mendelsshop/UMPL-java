@@ -36,13 +36,15 @@ public class AstUntil extends Ast {
 
     @Override
     public Ast analyze_links(Anaylzer analyzer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'analyze_links'");
+        Condition = Condition.analyze_links(analyzer);
+        loopScope = loopScope.stream().<Ast>map(c->c.analyze_links(analyzer)).toList();
+        return this;
     }
 
     @Override
     public Ast analyze_labels(Anaylzer analyzer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'analyze_labels'");
+        Condition = Condition.analyze_labels(analyzer);
+        loopScope = loopScope.stream().<Ast>map(c->c.analyze_labels(analyzer)).toList();
+        return this;
     }
 }

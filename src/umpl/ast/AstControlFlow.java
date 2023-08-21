@@ -73,14 +73,14 @@ public class AstControlFlow extends Ast {
 
     @Override
     public Ast analyze_links(Anaylzer analyzer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'analyze_links'");
+        val = val.<Ast>map(c->c.analyze_links(analyzer));
+        return this;
     }
 
     @Override
-    public Ast analyze_labels(Anaylzer analyzer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'analyze_labels'");
+    public Ast analyze_labels(Anaylzer analyzer) {;
+        val = val.<Ast>map(c->c.analyze_labels(analyzer));
+        return this;
     }
 
 }

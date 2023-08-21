@@ -42,7 +42,6 @@ public class AstLink extends Ast {
 
     @Override
     public Ast analyze_labels(Anaylzer analyzer) {
-        // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'analyze_labels'");
     }
 

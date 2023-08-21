@@ -27,15 +27,14 @@ public class AstQuoted extends Ast {
         throw new UnsupportedOperationException("Unimplemented method 'evaluate'");
     }
 
+    // for quoted expressions they cannot do anything so we don't need to look for links and labels
     @Override
     public Ast analyze_links(Anaylzer analyzer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'analyze_links'");
+        return this;
     }
 
     @Override
     public Ast analyze_labels(Anaylzer analyzer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'analyze_labels'");
+        return this;
     }
 }

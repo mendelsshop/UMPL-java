@@ -49,7 +49,7 @@ public class AstIdent extends Ast {
 
     @Override
     public Ast analyze_labels(Anaylzer analyzer) {
-                return this;
+        return this;
     }
 
 }

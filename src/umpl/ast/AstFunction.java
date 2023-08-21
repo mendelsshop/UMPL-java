@@ -57,16 +57,15 @@ public class AstFunction extends Ast {
         // otherwise just return it
         return new Ok<>(new Ok<>(this));
     }
-
     @Override
     public Ast analyze_links(Anaylzer analyzer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'analyze_links'");
+        scope = scope.stream().<Ast>map(c->c.analyze_links(analyzer)).toList();
+        return this;
     }
 
     @Override
     public Ast analyze_labels(Anaylzer analyzer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'analyze_labels'");
+        scope = scope.stream().<Ast>map(c->c.analyze_labels(analyzer)).toList();
+        return this;
     }
 }

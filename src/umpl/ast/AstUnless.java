@@ -42,13 +42,17 @@ public class AstUnless extends Ast {
 
     @Override
     public Ast analyze_links(Anaylzer analyzer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'analyze_links'");
+        alternative = alternative.stream().<Ast>map(c->c.analyze_links(analyzer)).toList();
+        consequent = consequent.stream().<Ast>map(c->c.analyze_links(analyzer)).toList();
+        condition = condition.analyze_links(analyzer);
+        return this;
     }
 
     @Override
     public Ast analyze_labels(Anaylzer analyzer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'analyze_labels'");
+        alternative = alternative.stream().<Ast>map(c->c.analyze_labels(analyzer)).toList();
+        consequent = consequent.stream().<Ast>map(c->c.analyze_labels(analyzer)).toList();
+        condition = condition.analyze_labels(analyzer);
+        return this;
     }
 }
