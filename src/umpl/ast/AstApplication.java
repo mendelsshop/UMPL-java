@@ -45,13 +45,13 @@ public class AstApplication extends Ast {
     }
 
     @Override
-    public void analyze_links(Anaylzer analyzer) {
+    public Ast analyze_links(Anaylzer analyzer) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'analyze_links'");
     }
 
     @Override
-    public void analyze_labels(Anaylzer analyzer) {
+    public Ast analyze_labels(Anaylzer analyzer) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'analyze_labels'");
     }

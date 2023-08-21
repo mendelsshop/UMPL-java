@@ -46,12 +46,14 @@ public class AstLet extends Ast {
     }
 
     @Override
-    public void analyze_links(Anaylzer analyzer) {
-        value.analyze_links(analyzer);
+    public Ast analyze_links(Anaylzer analyzer) {
+       value = value.analyze_links(analyzer);
+       return this;
     }
 
     @Override
-    public void analyze_labels(Anaylzer analyzer) {
-        value.analyze_labels(analyzer);
+    public Ast analyze_labels(Anaylzer analyzer) {
+        value = value.analyze_labels(analyzer);
+        return this;
     }
 }

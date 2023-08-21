@@ -38,10 +38,12 @@ public class AstFnParam extends Ast {
     }
 
     @Override
-    public void analyze_links(Anaylzer analyzer) {
+    public Ast analyze_links(Anaylzer analyzer) {
+        return this;
     }
 
     @Override
-    public void analyze_labels(Anaylzer analyzer) {
+    public Ast analyze_labels(Anaylzer analyzer) {
+        return this;
     }
 }

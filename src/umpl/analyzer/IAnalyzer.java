@@ -1,7 +1,9 @@
 package umpl.analyzer;
 
-public interface IAnalyzer {
-    public void analyze_links(Anaylzer analyzer);
+import umpl.ast.Ast;
 
-    public void analyze_labels(Anaylzer analyzer);
+public interface IAnalyzer {
+    public Ast analyze_links(Anaylzer analyzer);
+
+    public Ast analyze_labels(Anaylzer analyzer);
 }

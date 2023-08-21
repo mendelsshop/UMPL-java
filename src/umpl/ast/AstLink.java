@@ -35,13 +35,13 @@ public class AstLink extends Ast {
     }
 
     @Override
-    public void analyze_links(Anaylzer analyzer) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'analyze_links'");
+    public Ast analyze_links(Anaylzer analyzer) {
+        analyzer.pushLink(GotoLabel, ComeFromLabels);
+        return new AstHempty();
     }
 
     @Override
-    public void analyze_labels(Anaylzer analyzer) {
+    public Ast analyze_labels(Anaylzer analyzer) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'analyze_labels'");
     }
